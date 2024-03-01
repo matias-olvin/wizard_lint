@@ -15,3 +15,14 @@ Components:
 
 File Retriever - it needs to scan for sql files given a path. It should only read files inside of path
 Parser - it should take in the path to the file that is retrieved and add jinja templating
+
+
+
+Parser Notes:
+
+- Loop through all regex matches (comments are an issue)
+- Best to pass through a series of filters:
+
+1. replace project
+2. check pre-existing jinja templating
+3. check value in config file
