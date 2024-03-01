@@ -73,3 +73,9 @@ obtain matches: make dict containing before and after -> modify after according 
                 fk_parents
         ) ON a.pid = fk_parents
     """
+
+FOR NEXT TIME: file Retriever functions into sql_parser
+
+only obtain args from main.py then pass them onto sql_parser init
+
+we want to have it so that every init is one attempt to change the sql files provided

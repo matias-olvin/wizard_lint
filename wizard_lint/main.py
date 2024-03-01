@@ -1,5 +1,7 @@
-from file_retriever import obtain_args, return_sql_paths, return_sql_string_from_path_list, return_dict_from_config_yaml_path
+from file_retriever import (obtain_args, return_dict_from_config_yaml_path,
+                            return_sql_paths, return_sql_string_from_path_list)
 from sql_parser import SQLParser
+
 
 def main():
     # obtain paths
@@ -17,5 +19,6 @@ def main():
     for sql_string in sql_strings:
         parser.add_jinja_templating_to_sql_string(sql_string=sql_string)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
