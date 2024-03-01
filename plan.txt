@@ -9,6 +9,7 @@ Reqs:
 - It needs to take in a specified params file
 - It should be able to be run on a folder path recursively or on individual files
 - It needs to handle Variables from airflow
+- It needs to be idempotent
 
 Components:
 
