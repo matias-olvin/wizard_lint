@@ -7,6 +7,7 @@ class SQLParser():
         self.config_dict = config_dict
         self.missing_keys_set = set()
         self.unhashable_keys = set()
+        self.files_changed = 0
 
     def _replace_project(self, project_string: str) -> str:
         if project_string == "storage-dev-olvin-com" or project_string == "storage-prod-olvin-com":
@@ -114,9 +115,10 @@ class SQLParser():
         missing_keys = self.missing_keys_set
 
         if len(missing_keys) != 0:
-            error_string = f"Missing the following keys: {missing_keys}"
-            raise ValueError(error_string)
+            print(f"Missing the following keys: {missing_keys}. File left unchanged")
         
         rendered_sql_string = self._return_rendered_sql_string(rendered_before_and_after_list=rendered_before_and_after_list, sql_string=sql_string)
+
+        self.files_changed +=1
 
         print(rendered_sql_string)
