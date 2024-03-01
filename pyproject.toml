@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "wizard-lint"
+version = "0.1.0"
+description = "creating a package to add jinja templating to sql code"
+authors = ["matias-olvin <matias@olvin.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
