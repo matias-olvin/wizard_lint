@@ -1,0 +1,16 @@
+currently there is an issue with adding jinja templating to code.
+It takes a while to add it ~ 10 minutes. I want to at least semi automate the process.
+
+Reqs:
+- It needs to add jinja templating only to parts where it is required
+- it should not add jinja templating to areas where it is not relevant
+- If a key is missing, alert user of the missing key(s)
+- It is better for it to be atomic ie if there is an error, nothing happens
+- It needs to take in a specified params file
+- It should be able to be run on a folder path recursively or on individual files
+- It needs to handle Variables from airflow
+
+Components:
+
+File Retriever - it needs to scan for sql files given a path. It should only read files inside of path
+Parser - it should take in the path to the file that is retrieved and add jinja templating
