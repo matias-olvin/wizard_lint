@@ -1,13 +1,67 @@
 import re
 from typing import List
+import os
+import yaml
+
+from rich.console import Console
+from rich.text import Text
 
 
 class SQLParser:
-    def __init__(self, config_dict: dict) -> None:
-        self.config_dict = config_dict
+    def __init__(self, config_file_path: str, file_path: str) -> None:
+        self.file_path = file_path
+        self.config_file_path = config_file_path
         self.missing_keys_set = set()
         self.unhashable_keys = set()
         self.files_changed = 0
+        self.total_number_of_files = 0
+
+
+    def _return_dict_from_config_yaml_path(self, file_path: str) -> dict:
+        with open(file_path, "r") as file:
+            return dict(yaml.safe_load(file))
+
+
+    def _return_sql_string_from_path_list(self, file_path_list: List[str]) -> List[str]:
+        """Return the sql strings in a list"""
+        sql_strings = list()
+
+        for path in file_path_list:
+            with open(path, "r") as file:
+                sql_string = file.read()
+
+            sql_strings.append(sql_string)
+
+        return sql_strings
+
+
+    def _return_sql_paths(self, file_path: str) -> List[str]:
+        if file_path.endswith(".sql"):
+            self.total_number_of_files = 1
+            return [file_path]
+        else:
+            sql_files = []
+            for root, _, files in os.walk(file_path):
+                for file in files:
+                    if file.endswith(".sql"):
+                        sql_files.append(os.path.join(root, file))
+
+            self.total_number_of_files = len(sql_files)
+            
+            return sql_files
+        
+    def _return_config_dict_and_sql_strings(self) -> tuple[dict, list]:
+        # pass file path to be render from sql to string
+        file_path = self.file_path
+        config_path = self.config_file_path
+
+        sql_files = self._return_sql_paths(file_path)
+
+        sql_strings = self._return_sql_string_from_path_list(sql_files)
+
+        config_dict = self._return_dict_from_config_yaml_path(config_path)
+
+        return config_dict, sql_strings
 
     def _replace_project(self, project_string: str) -> str:
         if (
@@ -94,40 +148,54 @@ class SQLParser:
 
         return sql_string
 
-    def add_jinja_templating_to_sql_string(self, sql_string: str):
-        config = self.config_dict
+    def add_jinja_templating_to_sql_string(self):
+        
+        config_dict, sql_strings_list = self._return_config_dict_and_sql_strings()
 
-        re_pattern = "\`(.*)\.(.*)\.(.*)\`"
+        for sql_string in sql_strings_list:
 
-        unique_before_and_after_list = (
-            self._return_re_match_unique_before_and_after_list(re_pattern, sql_string)
-        )
+            re_pattern = "\`(.*)\.(.*)\.(.*)\`"
 
-        reverse_config_dict = self._reverse_config_dict(config)
-
-        rendered_before_and_after_list = list()
-
-        for unique_table_ref in unique_before_and_after_list:
-            before = unique_table_ref["before"]
-
-            after = self._replace_vals_for_keys(
-                reversed_dict=reverse_config_dict, table_ref_string=before
+            unique_before_and_after_list = (
+                self._return_re_match_unique_before_and_after_list(re_pattern, sql_string)
             )
 
-            unique_table_ref["after"] = after
+            reverse_config_dict = self._reverse_config_dict(config_dict)
 
-            rendered_before_and_after_list.append(unique_table_ref)
+            rendered_before_and_after_list = list()
 
-        missing_keys = self.missing_keys_set
+            for unique_table_ref in unique_before_and_after_list:
+                before = unique_table_ref["before"]
 
-        if len(missing_keys) != 0:
-            print(f"Missing the following keys: {missing_keys}. File left unchanged")
+                after = self._replace_vals_for_keys(
+                    reversed_dict=reverse_config_dict, table_ref_string=before
+                )
 
-        rendered_sql_string = self._return_rendered_sql_string(
-            rendered_before_and_after_list=rendered_before_and_after_list,
-            sql_string=sql_string,
-        )
+                unique_table_ref["after"] = after
 
-        self.files_changed += 1
+                rendered_before_and_after_list.append(unique_table_ref)
 
-        print(rendered_sql_string)
+            missing_keys = self.missing_keys_set
+
+            if len(missing_keys) != 0:
+                print(f"Missing the following keys: {missing_keys}. File left unchanged")
+
+            rendered_sql_string = self._return_rendered_sql_string(
+                rendered_before_and_after_list=rendered_before_and_after_list,
+                sql_string=sql_string,
+            )
+
+            self.files_changed += 1
+
+    
+    def summary(self):
+        tot_files = self.total_number_of_files
+        f_changed = self.files_changed
+
+        # Create a Console instance
+        console = Console()
+
+        # # Create a Text instance
+        text = f"[bold cyan]Number of files changed[/bold cyan]: [bold red]{f_changed}[/bold red]\n[bold magenta]Number of files left untouched[/bold magenta]: [white]{tot_files - f_changed}[/white]"
+
+        console.print(text)
