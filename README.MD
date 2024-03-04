@@ -38,3 +38,8 @@ FOR NEXT TIME: file Retriever functions into sql_parser
 only obtain args from main.py then pass them onto sql_parser init
 
 we want to have it so that every init is one attempt to change the sql files provided
+
+ISSUE:
+
+{{ var.value.env_project }}.{{ params['postgres_dataset'] }}.{{ params['sgcenterraw_table'] }} since the value is already rendered, it is trying to
+split var.value.env_project on `.`

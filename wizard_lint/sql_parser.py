@@ -22,17 +22,17 @@ class SQLParser:
             return dict(yaml.safe_load(file))
 
 
-    def _return_sql_string_from_path_list(self, file_path_list: List[str]) -> List[str]:
+    def _return_sql_string_from_path_list(self, file_path_list: List[str]) -> List[List[str]]:
         """Return the sql strings in a list"""
-        sql_strings = list()
+        sql_string_and_path_list = list()
 
         for path in file_path_list:
             with open(path, "r") as file:
                 sql_string = file.read()
 
-            sql_strings.append(sql_string)
+            sql_string_and_path_list.append([sql_string, path])
 
-        return sql_strings
+        return sql_string_and_path_list
 
 
     def _return_sql_paths(self, file_path: str) -> List[str]:
@@ -57,11 +57,11 @@ class SQLParser:
 
         sql_files = self._return_sql_paths(file_path)
 
-        sql_strings = self._return_sql_string_from_path_list(sql_files)
+        sql_strings_and_paths = self._return_sql_string_from_path_list(sql_files)
 
         config_dict = self._return_dict_from_config_yaml_path(config_path)
 
-        return config_dict, sql_strings
+        return config_dict, sql_strings_and_paths
 
     def _replace_project(self, project_string: str) -> str:
         if (
@@ -148,11 +148,15 @@ class SQLParser:
 
         return sql_string
 
+    def _create_or_replace_sql_file(self, file_path: str, content: str):
+        with open(file_path, "w") as file:
+            file.write(content)
+
     def add_jinja_templating_to_sql_string(self):
         
-        config_dict, sql_strings_list = self._return_config_dict_and_sql_strings()
+        config_dict, sql_string_and_path_list = self._return_config_dict_and_sql_strings()
 
-        for sql_string in sql_strings_list:
+        for sql_string, path in sql_string_and_path_list:
 
             re_pattern = "\`(.*)\.(.*)\.(.*)\`"
 
@@ -178,14 +182,17 @@ class SQLParser:
             missing_keys = self.missing_keys_set
 
             if len(missing_keys) != 0:
-                print(f"Missing the following keys: {missing_keys}. File left unchanged")
+                print(f"Missing the following keys: {missing_keys}: {path} left unchanged")
+            else:
 
-            rendered_sql_string = self._return_rendered_sql_string(
-                rendered_before_and_after_list=rendered_before_and_after_list,
-                sql_string=sql_string,
-            )
+                rendered_sql_string = self._return_rendered_sql_string(
+                    rendered_before_and_after_list=rendered_before_and_after_list,
+                    sql_string=sql_string,
+                )
 
-            self.files_changed += 1
+                self._create_or_replace_sql_file(path, rendered_sql_string)
+
+                self.files_changed += 1
 
         self._summary()
 
