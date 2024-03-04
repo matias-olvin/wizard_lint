@@ -1,5 +1,4 @@
-from file_retriever import (obtain_args, return_dict_from_config_yaml_path,
-                            return_sql_paths, return_sql_string_from_path_list)
+from file_retriever import obtain_args
 from sql_parser import SQLParser
 
 
@@ -10,6 +9,7 @@ def main():
     parser = SQLParser(config_file_path=config_path, file_path=file_path)
 
     parser.add_jinja_templating_to_sql_string()
+
 
 if __name__ == "__main__":
     main()

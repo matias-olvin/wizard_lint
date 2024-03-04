@@ -1,8 +1,8 @@
+import os
 import re
 from typing import List
-import os
-import yaml
 
+import yaml
 from rich.console import Console
 from rich.text import Text
 
@@ -16,13 +16,13 @@ class SQLParser:
         self.files_changed = 0
         self.total_number_of_files = 0
 
-
     def _return_dict_from_config_yaml_path(self, file_path: str) -> dict:
         with open(file_path, "r") as file:
             return dict(yaml.safe_load(file))
 
-
-    def _return_sql_string_from_path_list(self, file_path_list: List[str]) -> List[List[str]]:
+    def _return_sql_string_from_path_list(
+        self, file_path_list: List[str]
+    ) -> List[List[str]]:
         """Return the sql strings in a list"""
         sql_string_and_path_list = list()
 
@@ -33,7 +33,6 @@ class SQLParser:
             sql_string_and_path_list.append([sql_string, path])
 
         return sql_string_and_path_list
-
 
     def _return_sql_paths(self, file_path: str) -> List[str]:
         if file_path.endswith(".sql"):
@@ -47,9 +46,9 @@ class SQLParser:
                         sql_files.append(os.path.join(root, file))
 
             self.total_number_of_files = len(sql_files)
-            
+
             return sql_files
-        
+
     def _return_config_dict_and_sql_strings(self) -> tuple[dict, list]:
         # pass file path to be render from sql to string
         file_path = self.file_path
@@ -153,15 +152,19 @@ class SQLParser:
             file.write(content)
 
     def add_jinja_templating_to_sql_string(self):
-        
-        config_dict, sql_string_and_path_list = self._return_config_dict_and_sql_strings()
+
+        config_dict, sql_string_and_path_list = (
+            self._return_config_dict_and_sql_strings()
+        )
 
         for sql_string, path in sql_string_and_path_list:
 
             re_pattern = "\`(.*)\.(.*)\.(.*)\`"
 
             unique_before_and_after_list = (
-                self._return_re_match_unique_before_and_after_list(re_pattern, sql_string)
+                self._return_re_match_unique_before_and_after_list(
+                    re_pattern, sql_string
+                )
             )
 
             reverse_config_dict = self._reverse_config_dict(config_dict)
@@ -182,7 +185,9 @@ class SQLParser:
             missing_keys = self.missing_keys_set
 
             if len(missing_keys) != 0:
-                print(f"Missing the following keys: {missing_keys}: {path} left unchanged")
+                print(
+                    f"Missing the following keys: {missing_keys}: {path} left unchanged"
+                )
             else:
 
                 rendered_sql_string = self._return_rendered_sql_string(
@@ -198,7 +203,6 @@ class SQLParser:
 
         self._summary()
 
-    
     def _summary(self):
         tot_files = self.total_number_of_files
         f_changed = self.files_changed
