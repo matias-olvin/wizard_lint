@@ -11,7 +11,5 @@ def main():
 
     parser.add_jinja_templating_to_sql_string()
 
-    parser.summary()
-
 if __name__ == "__main__":
     main()

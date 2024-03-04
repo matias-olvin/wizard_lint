@@ -187,8 +187,10 @@ class SQLParser:
 
             self.files_changed += 1
 
+        self._summary()
+
     
-    def summary(self):
+    def _summary(self):
         tot_files = self.total_number_of_files
         f_changed = self.files_changed
 
