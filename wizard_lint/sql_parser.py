@@ -205,7 +205,7 @@ class SQLParser:
                     sql_string=sql_string,
                 )
 
-                path = path.replace(".sql", "_test.sql")
+                # path = path.replace(".sql", "_test.sql")
 
                 self._create_or_replace_sql_file(path, rendered_sql_string)
 
