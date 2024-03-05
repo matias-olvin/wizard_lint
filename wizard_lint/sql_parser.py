@@ -70,6 +70,10 @@ class SQLParser:
             return "{{ var.value.env_project }}"
         elif project_string == "sns-vendor-olvin-poc":
             return "{{ var.value.sns_project }}"
+        elif project_string == "{{ var.value.env_project }}":
+            return project_string
+        elif project_string == "{{ var.value.sns_project }}":
+            return project_string
         else:
             raise ValueError(f"Project: {project_string} not recognised")
 
@@ -114,7 +118,13 @@ class SQLParser:
 
     def _replace_vals_for_keys(self, reversed_dict: dict, table_ref_string: str):
 
-        project, dataset, table = table_ref_string.split(".")
+        # project, dataset, table = table_ref_string.split(".")[:-2]
+        table_ref_string
+        matches = re.findall(pattern="(.*)\.(.*)\.(.*)", string=table_ref_string)
+
+        project, dataset, table = matches[0]
+
+        print(project, dataset, table)
 
         var_project = self._replace_project(project)
 
