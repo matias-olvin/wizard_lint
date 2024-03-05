@@ -43,3 +43,5 @@ ISSUE:
 
 {{ var.value.env_project }}.{{ params['postgres_dataset'] }}.{{ params['sgcenterraw_table'] }} since the value is already rendered, it is trying to
 split var.value.env_project on `.`
+
+THe issue is fixed but it is not dynamic. It needs to support any var.value.{VALUE_HERE} use regex
