@@ -1,7 +1,7 @@
 CREATE OR REPLACE TABLE
-    `{{ var.value.env_project }}.{{ params['postgres_final_dataset'] }}.{{ params['sgcenterraw_table'] }}`
-    --  `{{ var.value.env_project }}.{{ params['postgres_dataset'] }}.{{ params['sgcenterraw_table'] }}`
-    --  `{{ var.value.env_project }}.{{ params['postgres_final_dataset'] }}.{{ params['sgcenterraw_table'] }}`
+    `storage-prod-olvin-com.postgres_final.SGCenterRaw`
+    --  `storage-prod-olvin-com.postgres.SGCenterRaw`
+    --  `storage-prod-olvin-com.postgres_final.SGCenterRaw`
     AS
 SELECT
     a.*,
@@ -13,7 +13,7 @@ SELECT
         FALSE
     ) AS patterns_availability
 FROM
-    `{{ var.value.env_project }}.{{ params['sg_places_table'] }}.{{ params['malls_base_table'] }}` a
+    `storage-prod-olvin-com.sg_places.malls_base` a
     LEFT JOIN (
         SELECT
             fk_parents,
@@ -26,12 +26,12 @@ FROM
                     fk_parents,
                     activity
                 FROM
-                    `{{ var.value.env_project }}.{{ params['postgres_final_dataset'] }}.{{ params['sgplaceraw_table'] }}`
-                    -- `{{ var.value.env_project }}.{{ params['postgres_dataset'] }}.{{ params['sgplaceraw_table'] }}`
-                    -- `{{ var.value.env_project }}.{{ params['postgres_final_dataset'] }}.{{ params['sgplaceraw_table'] }}`
-                    INNER JOIN `{{ var.value.env_project }}.{{ params['postgres_final_dataset'] }}.{{ params['sgplace_activity_table'] }}`
-                    -- `{{ var.value.env_project }}.{{ params['postgres_dataset'] }}.{{ params['sgplace_activity_table'] }}`
-                    -- `{{ var.value.env_project }}.{{ params['postgres_final_dataset'] }}.{{ params['sgplace_activity_table'] }}`
+                    `storage-prod-olvin-com.postgres_final.SGPlaceRaw`
+                    -- `storage-prod-olvin-com.postgres.SGPlaceRaw`
+                    -- `storage-prod-olvin-com.postgres_final.SGPlaceRaw`
+                    INNER JOIN `storage-prod-olvin-com.postgres_final.SGPlaceActivity`
+                    -- `storage-prod-olvin-com.postgres.SGPlaceActivity`
+                    -- `storage-prod-olvin-com.postgres_final.SGPlaceActivity`
                     ON pid = fk_sgplaces
             )
         GROUP BY

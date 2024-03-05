@@ -208,9 +208,15 @@ class SQLParser:
             check_for_changes = self._check_for_file_change(rendered_before_and_after_list=rendered_before_and_after_list)
 
             if len(missing_keys) != 0:
-                print(
-                    f"Missing the following keys: {missing_keys}: {path} left unchanged"
-                )
+
+                console = Console()
+
+                # # Create a Text instance
+                text = f"[bold red]Missing[/bold red] the following keys: {missing_keys}: {path} left unchanged"
+                console.print(text)
+
+                # reset missing keys
+                self.missing_keys_set = set()
             elif not check_for_changes:
                 print(f"{path} left unchanged")
             else:
@@ -235,6 +241,6 @@ class SQLParser:
         console = Console()
 
         # # Create a Text instance
-        text = f"[bold cyan]Number of files changed[/bold cyan]: [bold red]{f_changed}[/bold red]\n[bold magenta]Number of files left untouched[/bold magenta]: [white]{tot_files - f_changed}[/white]"
+        text = f"[bold cyan]Number of files changed[/bold cyan]: [white]{f_changed}[/white]\n[bold magenta]Number of files left untouched[/bold magenta]: [white]{tot_files - f_changed}[/white]"
 
         console.print(text)
