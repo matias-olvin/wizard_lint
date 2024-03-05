@@ -124,8 +124,6 @@ class SQLParser:
 
         project, dataset, table = matches[0]
 
-        print(project, dataset, table)
-
         var_project = self._replace_project(project)
 
         try:
@@ -161,6 +159,19 @@ class SQLParser:
         with open(file_path, "w") as file:
             file.write(content)
 
+    def _check_for_file_change(self, rendered_before_and_after_list: list[dict]) -> bool:
+        
+        changed = False
+
+        for ba_dict in rendered_before_and_after_list:
+            before = ba_dict["before"]
+            after = ba_dict["after"]
+            if before != after:
+                changed = True
+                break
+            
+        return changed
+
     def add_jinja_templating_to_sql_string(self):
 
         config_dict, sql_string_and_path_list = (
@@ -194,12 +205,15 @@ class SQLParser:
 
             missing_keys = self.missing_keys_set
 
+            check_for_changes = self._check_for_file_change(rendered_before_and_after_list=rendered_before_and_after_list)
+
             if len(missing_keys) != 0:
                 print(
                     f"Missing the following keys: {missing_keys}: {path} left unchanged"
                 )
+            elif not check_for_changes:
+                print(f"{path} left unchanged")
             else:
-
                 rendered_sql_string = self._return_rendered_sql_string(
                     rendered_before_and_after_list=rendered_before_and_after_list,
                     sql_string=sql_string,
