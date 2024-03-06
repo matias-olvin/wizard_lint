@@ -231,7 +231,7 @@ class SQLParser:
 
                 self.files_changed += 1
 
-                print(f"Reformatted {path}")
+                print(f":magic_wand: Reformatted {path}")
 
         self._summary()
 
@@ -240,6 +240,5 @@ class SQLParser:
         f_changed = self.files_changed
 
         # # Create a Text instance
-        text = f"[bold cyan]Number of files changed[/bold cyan]: [white]{f_changed}[/white]\n[bold magenta]Number of files left untouched[/bold magenta]: [white]{tot_files - f_changed}[/white]"
-
-        print(text)
+        print(f"[bold cyan]Number of files changed[/bold cyan]: [white]{f_changed}[/white]")
+        print(f"[bold magenta]Number of files left untouched[/bold magenta]: [white]{tot_files - f_changed}[/white]")
