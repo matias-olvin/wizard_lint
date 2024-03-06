@@ -26,20 +26,16 @@ jobs:
       - name: Install dependencies
         run: |
           npm install -g black
-          npm install -g isort
 
       - name: Lint with Black
         run: black .
-
-      - name: Lint with isort
-        run: isort .
 
       - name: Commit changes
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add .
-          git commit -m "Apply Black and isort formatting" || true  # Ignore if nothing to commit
+          git commit -m "Apply Black formatting" || true  # Ignore if nothing to commit
 
       - name: Push changes
         uses: ad-m/github-push-action@master
