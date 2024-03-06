@@ -212,7 +212,6 @@ class SQLParser:
 
             if len(missing_keys) != 0:
 
-
                 # Create a Text instance
 
                 missing_keys_text = f"[bold red]Missing[/bold red] the following keys: {list(missing_keys)}, {path} left unchanged"
