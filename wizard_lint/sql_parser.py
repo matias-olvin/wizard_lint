@@ -14,6 +14,7 @@ class SQLParser:
         self.unhashable_keys = set()
         self.files_changed = 0
         self.total_number_of_files = 0
+        self.unknown_projects = set()
 
     def _return_dict_from_config_yaml_path(self, file_path: str) -> dict:
         with open(file_path, "r") as file:
@@ -74,7 +75,9 @@ class SQLParser:
         elif project_string == "{{ var.value.sns_project }}":
             return project_string
         else:
-            raise ValueError(f"Project: {project_string} not recognised")
+            # If the project is not recognised, add it to set of unrecorgnised projects then explain in summary
+            self.unknown_projects.add(project_string)
+            return project_string
 
     def _return_re_match_unique_before_and_after_list(
         self, pattern: str, sql_string: str
@@ -238,7 +241,13 @@ class SQLParser:
     def _summary(self):
         tot_files = self.total_number_of_files
         f_changed = self.files_changed
+        unk_projs = self.unknown_projects
 
-        # # Create a Text instance
-        print(f"[bold cyan]Number of files changed[/bold cyan]: [white]{f_changed}[/white]")
-        print(f"[bold magenta]Number of files left untouched[/bold magenta]: [white]{tot_files - f_changed}[/white]")
+        print("[bold green]Summary:[/bold green]\n")   
+
+        if len(unk_projs) > 0:
+            print(f"[bold red1]Manual Intervention[/bold red1]: the following projects need to be manually added as they are not recognised {unk_projs}")
+
+        # Create a Text instance
+        print(f"[cyan]Number of files changed[/cyan]: [white]{f_changed}[/white]")
+        print(f"[magenta]Number of files left untouched[/magenta]: [white]{tot_files - f_changed}[/white]")
