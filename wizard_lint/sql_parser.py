@@ -3,8 +3,7 @@ import re
 from typing import List
 
 import yaml
-from rich.console import Console
-from rich.text import Text
+from rich import print
 
 
 class SQLParser:
@@ -159,8 +158,10 @@ class SQLParser:
         with open(file_path, "w") as file:
             file.write(content)
 
-    def _check_for_file_change(self, rendered_before_and_after_list: list[dict]) -> bool:
-        
+    def _check_for_file_change(
+        self, rendered_before_and_after_list: list[dict]
+    ) -> bool:
+
         changed = False
 
         for ba_dict in rendered_before_and_after_list:
@@ -169,7 +170,7 @@ class SQLParser:
             if before != after:
                 changed = True
                 break
-            
+
         return changed
 
     def add_jinja_templating_to_sql_string(self):
@@ -205,31 +206,33 @@ class SQLParser:
 
             missing_keys = self.missing_keys_set
 
-            check_for_changes = self._check_for_file_change(rendered_before_and_after_list=rendered_before_and_after_list)
+            check_for_changes = self._check_for_file_change(
+                rendered_before_and_after_list=rendered_before_and_after_list
+            )
 
             if len(missing_keys) != 0:
 
-                console = Console()
 
-                # # Create a Text instance
-                text = f"[bold red]Missing[/bold red] the following keys: {missing_keys}: {path} left unchanged"
-                console.print(text)
+                # Create a Text instance
+
+                missing_keys_text = f"[bold red]Missing[/bold red] the following keys: {list(missing_keys)}, {path} left unchanged"
+                print(missing_keys_text)
 
                 # reset missing keys
                 self.missing_keys_set = set()
             elif not check_for_changes:
-                print(f"{path} left unchanged")
+                continue
             else:
                 rendered_sql_string = self._return_rendered_sql_string(
                     rendered_before_and_after_list=rendered_before_and_after_list,
                     sql_string=sql_string,
                 )
 
-                # path = path.replace(".sql", "_test.sql")
-
                 self._create_or_replace_sql_file(path, rendered_sql_string)
 
                 self.files_changed += 1
+
+                print(f"Reformatted {path}")
 
         self._summary()
 
@@ -237,10 +240,7 @@ class SQLParser:
         tot_files = self.total_number_of_files
         f_changed = self.files_changed
 
-        # Create a Console instance
-        console = Console()
-
         # # Create a Text instance
         text = f"[bold cyan]Number of files changed[/bold cyan]: [white]{f_changed}[/white]\n[bold magenta]Number of files left untouched[/bold magenta]: [white]{tot_files - f_changed}[/white]"
 
-        console.print(text)
+        print(text)

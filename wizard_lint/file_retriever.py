@@ -15,8 +15,4 @@ def obtain_args() -> List[str]:
     # Parse the arguments
     args = parser.parse_args()
 
-    # Print the provided paths
-    print("File path provided by the user:", args.file)
-    print("config.yaml path provided by the user:", args.config)
-
     return [args.file, args.config]
