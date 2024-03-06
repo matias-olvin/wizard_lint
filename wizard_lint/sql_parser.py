@@ -208,16 +208,21 @@ class SQLParser:
                 rendered_before_and_after_list.append(unique_table_ref)
 
             missing_keys = self.missing_keys_set
+            unknown_projects = self.unknown_projects
 
             check_for_changes = self._check_for_file_change(
                 rendered_before_and_after_list=rendered_before_and_after_list
             )
 
-            if len(missing_keys) != 0:
+            if len(unknown_projects) !=0:
+                unknown_projects_text = f"[bold red]ERROR:[/bold red] The following projects: {list(unknown_projects)} in {path}. File left unchanged"
+                print(unknown_projects_text)
 
-                # Create a Text instance
+                self.unknown_projects = set()
 
-                missing_keys_text = f"[bold red]Missing[/bold red] the following keys: {list(missing_keys)}, {path} left unchanged"
+            elif len(missing_keys) != 0:
+
+                missing_keys_text = f"[bold red]ERROR:[/bold red] Missing the following keys: {list(missing_keys)} in {path}. File left unchanged"
                 print(missing_keys_text)
 
                 # reset missing keys
@@ -243,11 +248,11 @@ class SQLParser:
         f_changed = self.files_changed
         unk_projs = self.unknown_projects
 
-        print("[bold green]Summary:[/bold green]\n")   
+        print("\n[bold green]File Change Summary:[/bold green]\n")   
 
         if len(unk_projs) > 0:
             print(f"[bold red1]Manual Intervention[/bold red1]: the following projects need to be manually added as they are not recognised {unk_projs}")
 
         # Create a Text instance
         print(f"[cyan]Number of files changed[/cyan]: [white]{f_changed}[/white]")
-        print(f"[magenta]Number of files left untouched[/magenta]: [white]{tot_files - f_changed}[/white]")
+        print(f"[magenta]Number of files left unchanged[/magenta]: [white]{tot_files - f_changed}[/white]")
