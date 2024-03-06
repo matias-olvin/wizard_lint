@@ -231,7 +231,7 @@ class SQLParser:
 
                 self.files_changed += 1
 
-                print(f":magic_wand: Reformatted {path}")
+                print(f"Reformatted {path}")
 
         self._summary()
 
