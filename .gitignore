@@ -1,2 +1,3 @@
-./sql_folder/
+./sql_folder
 ./config.yaml
+./wizard_lint/__pycache__
