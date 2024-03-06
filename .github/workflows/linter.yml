@@ -13,13 +13,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.10'
+          python-version: '3.10'  # Specify your Python version
 
       - name: Install dependencies
-        run: pip install black isort
+        run: |
+          npm install -g black
+          npm install -g isort
 
       - name: Lint with Black
         run: black .
