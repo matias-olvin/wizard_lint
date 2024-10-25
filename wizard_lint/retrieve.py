@@ -1,4 +1,5 @@
 from typing import List
+import os
 
 
 
@@ -9,6 +10,15 @@ def obtain_sql_string_from_file_path(path: str) -> str:
 
         return sql_string
 
-def obtain_file_paths_from_directory() -> List[str]:
-    return ["./sql_folder/dummy.sql"]
+def obtain_file_paths_from_directory(path: str) -> List[str]:
+    
+    if os.path.isfile(path) and path.endswith(".sql"):
+        return [path]
+    
+    file_paths = []
+    for root, _, files in os.walk(path):
+        for file in files:
+            if file.endswith(".sql"):
+                file_paths.append(os.path.join(root, file))
 
+    return file_paths
