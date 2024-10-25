@@ -1,5 +1,5 @@
 sql_folder/
 config.yaml
-wizard_lint/__pycache__
 .DS_Store
 poetry.lock
+**/__pycache__/
