@@ -1,5 +1,6 @@
-from typing import List
+from typing import List, Dict
 import os
+import yaml
 
 
 
@@ -22,3 +23,12 @@ def obtain_file_paths_from_directory(path: str) -> List[str]:
                 file_paths.append(os.path.join(root, file))
 
     return file_paths
+
+def obtain_config_yaml(path: str) -> Dict[str, str]:
+    with open(path, 'r') as file:
+        config = yaml.safe_load(file)
+
+    if not config:
+        return {}
+
+    return config
