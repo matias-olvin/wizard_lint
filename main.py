@@ -1,4 +1,5 @@
 from wizard_lint.retrieve import obtain_file_paths_from_directory, obtain_sql_string_from_file_path
+from wizard_lint.render import obtain_table_strings
 
 
 def main():
@@ -9,7 +10,8 @@ def main():
     # obtain sql from file paths obtained above
     sql_strings = [obtain_sql_string_from_file_path(path) for path in file_paths]
 
-    print(sql_strings)
+    for sql_string in sql_strings:
+        print(obtain_table_strings(sql_string))
 
 if __name__=="__main__":
     main()
