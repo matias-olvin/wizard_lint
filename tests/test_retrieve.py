@@ -1,4 +1,6 @@
-from wizard_lint.retrieve import obtain_sql_string_from_file_path, obtain_file_paths_from_directory
+from wizard_lint.retrieve import obtain_sql_string_from_file_path, obtain_file_paths_from_directory, obtain_config_yaml
+import yaml
+
 
 def test_obtain_sql_string_from_file_path():
 
@@ -32,3 +34,39 @@ def test_obtain_file_paths_from_directory_single_file(tmp_path):
 
     assert result_paths == expected_paths
 
+def test_obtain_config_yaml(tmp_path):
+    # Setup
+    config_file = tmp_path / "config.yaml"
+    config_content = {
+        "database": "test_db",
+        "user": "test_user",
+        "password": "test_password"
+    }
+    config_file.write_text(yaml.dump(config_content))
+
+    # Test
+    result_config = obtain_config_yaml(str(config_file))
+
+    assert result_config == config_content
+
+def test_obtain_config_yaml_empty_file(tmp_path):
+    # Setup
+    config_file = tmp_path / "empty_config.yaml"
+    config_file.write_text("")
+
+    # Test
+    result_config = obtain_config_yaml(str(config_file))
+
+    assert result_config == {}
+
+def test_obtain_config_yaml_invalid_yaml(tmp_path):
+    # Setup
+    config_file = tmp_path / "invalid_config.yaml"
+    config_file.write_text("invalid: [unclosed list")
+
+    # Test
+    try:
+        obtain_config_yaml(str(config_file))
+        assert False, "Expected a yaml.YAMLError to be raised"
+    except yaml.YAMLError:
+        pass
