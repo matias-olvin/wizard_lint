@@ -26,12 +26,11 @@ def test_obtain_table_strings_with_airflow_vars_and_no_tables():
 
 table_string = "project.dataset.table"
 
-config = {
-    "dataset_param": "dataset",
-    "table_param": "table",
-}
-
 def test_render_table_string_basic():
+    config = {
+        "dataset_param": "dataset",
+        "table_param": "table",
+    }
     assert render_table_string(config=config, table_string=table_string) == "project.{{ params['dataset_param'] }}.{{ params['table_param'] }}"
     
 def test_render_table_string_with_different_config():
