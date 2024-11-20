@@ -4,7 +4,7 @@ from wizard_lint.retrieve import obtain_file_paths_from_directory, obtain_sql_st
 def main():
 
     # obtain file paths from input directory
-    file_paths = obtain_file_paths_from_directory("placeholder")
+    file_paths = obtain_file_paths_from_directory("./sql_folder")
 
     # obtain sql from file paths obtained above
     sql_strings = [obtain_sql_string_from_file_path(path) for path in file_paths]
