@@ -10,7 +10,13 @@ def obtain_table_strings(sql_string: str) -> List[str]:
 
 def render_table_string(config: Dict[str, str], table_string: str) -> str:
 
-    flipped_config = {v: k for k, v in config.items()}
+    flipped_config = dict()
+
+    for k, v in config.items():
+        try:
+            flipped_config[v] = k
+        except TypeError:
+            continue
 
     project, dataset, table = table_string.split(".")
 
