@@ -67,3 +67,37 @@ def test_obtain_config_yaml_invalid_yaml(tmp_path):
         assert False, "Expected a yaml.YAMLError to be raised"
     except yaml.YAMLError:
         pass
+
+# test obtain_sql_string_from_file_path
+
+def test_obtain_sql_string_from_file_path(tmp_path):
+    # Setup
+    sql_file = tmp_path / "test.sql"
+    sql_content = "SELECT * FROM test_table;"
+    sql_file.write_text(sql_content)
+
+    # Test
+    result_sql_string = obtain_sql_string_from_file_path(str(sql_file))
+
+    assert result_sql_string == sql_content
+
+def test_obtain_sql_string_from_file_path_empty_file(tmp_path):
+    # Setup
+    sql_file = tmp_path / "empty.sql"
+    sql_file.write_text("")
+
+    # Test
+    result_sql_string = obtain_sql_string_from_file_path(str(sql_file))
+
+    assert result_sql_string == ""
+
+def test_obtain_sql_string_from_file_path_non_existent_file(tmp_path):
+    # Setup
+    sql_file = tmp_path / "non_existent.sql"
+
+    # Test
+    try:
+        obtain_sql_string_from_file_path(str(sql_file))
+        assert False, "Expected a FileNotFoundError to be raised"
+    except FileNotFoundError:
+        pass
