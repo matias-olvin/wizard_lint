@@ -1,4 +1,4 @@
-from wizard_lint.render import render_table_string, obtain_table_strings
+from wizard_lint.render import render_table_string, obtain_table_strings, render_sql_string_with_mapping_dict
 
 
 # test obtain_table_strings
@@ -77,3 +77,46 @@ def test_render_table_string_with_invalid_table_string():
         assert False, "Expected ValueError"
     except ValueError:
         pass
+
+# test render_sql_string_with_mapping_dict
+
+def test_render_sql_string_with_mapping_dict_single():
+    sql_string = "SELECT * FROM project.dataset.table"
+    mapping = {
+        "project.dataset.table": "project.{{ params['dataset_key'] }}.{{ params['table_key'] }}"
+    }
+    expected_result = "SELECT * FROM project.{{ params['dataset_key'] }}.{{ params['table_key'] }}"
+    assert render_sql_string_with_mapping_dict(sql_string, mapping) == expected_result
+
+def test_render_sql_string_with_mapping_dict_multiple():
+    sql_string = "SELECT * FROM project.dataset.table1 JOIN project.dataset.table2 ON table1.id = table2.id"
+    mapping = {
+        "project.dataset.table1": "project.{{ params['dataset_key1'] }}.{{ params['table_key1'] }}",
+        "project.dataset.table2": "project.{{ params['dataset_key2'] }}.{{ params['table_key2'] }}"
+    }
+    expected_result = "SELECT * FROM project.{{ params['dataset_key1'] }}.{{ params['table_key1'] }} JOIN project.{{ params['dataset_key2'] }}.{{ params['table_key2'] }} ON table1.id = table2.id"
+    assert render_sql_string_with_mapping_dict(sql_string, mapping) == expected_result
+
+def test_render_sql_string_with_mapping_dict_no_match():
+    sql_string = "SELECT * FROM project.dataset.table"
+    mapping = {
+        "project.dataset.table1": "project.{{ params['dataset_key1'] }}.{{ params['table_key1'] }}"
+    }
+    expected_result = "SELECT * FROM project.dataset.table"
+    assert render_sql_string_with_mapping_dict(sql_string, mapping) == expected_result
+
+def test_render_sql_string_with_mapping_dict_partial_match():
+    sql_string = "SELECT * FROM project.dataset.table1, project.dataset.table2"
+    mapping = {
+        "project.dataset.table1": "project.{{ params['dataset_key1'] }}.{{ params['table_key1'] }}"
+    }
+    expected_result = "SELECT * FROM project.{{ params['dataset_key1'] }}.{{ params['table_key1'] }}, project.dataset.table2"
+    assert render_sql_string_with_mapping_dict(sql_string, mapping) == expected_result
+
+def test_render_sql_string_with_mapping_dict_with_airflow_vars():
+    sql_string = "SELECT * FROM project.dataset.table WHERE column = '{{ var.value.variable_name }}'"
+    mapping = {
+        "project.dataset.table": "project.{{ params['dataset_key'] }}.{{ params['table_key'] }}"
+    }
+    expected_result = "SELECT * FROM project.{{ params['dataset_key'] }}.{{ params['table_key'] }} WHERE column = '{{ var.value.variable_name }}'"
+    assert render_sql_string_with_mapping_dict(sql_string, mapping) == expected_result
