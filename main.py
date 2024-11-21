@@ -1,3 +1,4 @@
+import argparse
 from rich import print
 
 from wizard_lint.render import (obtain_table_strings,
@@ -9,12 +10,12 @@ from wizard_lint.retrieve import (obtain_config_yaml,
                                   obtain_sql_string_from_file_path)
 
 
-def main():
+def main(config_path, sql_folder_path):
 
-    config = obtain_config_yaml("./config.yaml")
+    config = obtain_config_yaml(config_path)
 
     # obtain file paths from input directory
-    file_paths = obtain_file_paths_from_directory("./sql_folder")
+    file_paths = obtain_file_paths_from_directory(sql_folder_path)
 
     for n, path in enumerate(file_paths):
 
@@ -42,4 +43,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Process some SQL files.")
+    parser.add_argument('config_path', type=str, help='Path to the config YAML file')
+    parser.add_argument('sql_folder_path', type=str, help='Path to the folder containing SQL files')
+
+    args = parser.parse_args()
+    main(args.config_path, args.sql_folder_path)
