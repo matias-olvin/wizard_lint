@@ -1,5 +1,8 @@
-from wizard_lint.retrieve import obtain_sql_string_from_file_path, obtain_file_paths_from_directory, obtain_config_yaml
 import yaml
+
+from wizard_lint.retrieve import (obtain_config_yaml,
+                                  obtain_file_paths_from_directory,
+                                  obtain_sql_string_from_file_path)
 
 
 def test_obtain_file_paths_from_directory(tmp_path):
@@ -16,6 +19,7 @@ def test_obtain_file_paths_from_directory(tmp_path):
 
     assert result_paths == expected_paths
 
+
 def test_obtain_file_paths_from_directory_single_file(tmp_path):
     # Setup
     sql_folder = tmp_path / "sql_folder"
@@ -29,7 +33,9 @@ def test_obtain_file_paths_from_directory_single_file(tmp_path):
 
     assert result_paths == expected_paths
 
+
 # test obtain_config_yaml
+
 
 def test_obtain_config_yaml(tmp_path):
     # Setup
@@ -37,7 +43,7 @@ def test_obtain_config_yaml(tmp_path):
     config_content = {
         "database": "test_db",
         "user": "test_user",
-        "password": "test_password"
+        "password": "test_password",
     }
     config_file.write_text(yaml.dump(config_content))
 
@@ -45,6 +51,7 @@ def test_obtain_config_yaml(tmp_path):
     result_config = obtain_config_yaml(str(config_file))
 
     assert result_config == config_content
+
 
 def test_obtain_config_yaml_empty_file(tmp_path):
     # Setup
@@ -55,6 +62,7 @@ def test_obtain_config_yaml_empty_file(tmp_path):
     result_config = obtain_config_yaml(str(config_file))
 
     assert result_config == {}
+
 
 def test_obtain_config_yaml_invalid_yaml(tmp_path):
     # Setup
@@ -68,7 +76,9 @@ def test_obtain_config_yaml_invalid_yaml(tmp_path):
     except yaml.YAMLError:
         pass
 
+
 # test obtain_sql_string_from_file_path
+
 
 def test_obtain_sql_string_from_file_path(tmp_path):
     # Setup
@@ -81,6 +91,7 @@ def test_obtain_sql_string_from_file_path(tmp_path):
 
     assert result_sql_string == sql_content
 
+
 def test_obtain_sql_string_from_file_path_empty_file(tmp_path):
     # Setup
     sql_file = tmp_path / "empty.sql"
@@ -90,6 +101,7 @@ def test_obtain_sql_string_from_file_path_empty_file(tmp_path):
     result_sql_string = obtain_sql_string_from_file_path(str(sql_file))
 
     assert result_sql_string == ""
+
 
 def test_obtain_sql_string_from_file_path_non_existent_file(tmp_path):
     # Setup
