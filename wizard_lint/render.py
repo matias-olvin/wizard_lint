@@ -20,3 +20,10 @@ def render_table_string(config: Dict[str, str], table_string: str) -> str:
     rendered_string = f"{project}.{rendered_dataset}.{rendered_table}"
 
     return rendered_string
+
+def render_sql_string_with_mapping_dict(sql_string, mapping: Dict[str, str]) -> str:
+    
+    for key, value in mapping.items():
+        sql_string = sql_string.replace(key, value)
+    
+    return sql_string
