@@ -27,3 +27,7 @@ def render_sql_string_with_mapping_dict(sql_string, mapping: Dict[str, str]) -> 
         sql_string = sql_string.replace(key, value)
     
     return sql_string
+
+def overwrite_sql_file_with_rendered_sql_string(path: str, rendered_sql_string: str) -> None:
+    with open(path, 'w') as file:
+        file.write(rendered_sql_string)
