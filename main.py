@@ -16,11 +16,13 @@ def main():
 
         table_strings = obtain_table_strings(sql_string)
 
+        print(table_strings)
+
         rendered_table_strings_mapping = {table_string: render_table_string(config, table_string) for table_string in table_strings}
 
-        rendered_sql_string = render_sql_string_with_mapping_dict(sql_string, rendered_table_strings_mapping)
+        # rendered_sql_string = render_sql_string_with_mapping_dict(sql_string, rendered_table_strings_mapping)
 
-        overwrite_sql_file_with_rendered_sql_string(path, rendered_sql_string)
+        # overwrite_sql_file_with_rendered_sql_string(path, rendered_sql_string)
 
         print(f"[cyan]{n + 1}[/cyan][white]{path} rendered[/white] [green]successfully[/green]")
 
