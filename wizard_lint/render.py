@@ -22,8 +22,15 @@ def render_table_string(config: Dict[str, str], table_string: str) -> str:
 
     project, dataset, table = table_string.split(".")
 
-    rendered_dataset = "{{ params['" + flipped_config[dataset] + "'] }}"
-    rendered_table = "{{ params['" + flipped_config[table] + "'] }}"
+    if dataset.startswith("{{ params["):
+        rendered_dataset = dataset
+    else:
+        rendered_dataset = "{{ params['" + flipped_config[dataset] + "'] }}"
+    
+    if table.startswith("{{ params["):
+        rendered_table = table
+    else:
+        rendered_table = "{{ params['" + flipped_config[table] + "'] }}"
 
     rendered_string = f"{project}.{rendered_dataset}.{rendered_table}"
 
