@@ -1,4 +1,4 @@
-from wizard_lint.render import render_table_string, obtain_table_strings, render_sql_string_with_mapping_dict
+from wizard_lint.render import render_table_string, obtain_table_strings, render_sql_string_with_mapping_dict, overwrite_sql_file_with_rendered_sql_string
 
 
 # test obtain_table_strings
@@ -120,3 +120,38 @@ def test_render_sql_string_with_mapping_dict_with_airflow_vars():
     }
     expected_result = "SELECT * FROM project.{{ params['dataset_key'] }}.{{ params['table_key'] }} WHERE column = '{{ var.value.variable_name }}'"
     assert render_sql_string_with_mapping_dict(sql_string, mapping) == expected_result
+
+# test overwrite_sql_file_with_rendered_sql_string
+
+def test_overwrite_sql_file_with_rendered_sql_string_basic(tmp_path):
+    test_file = tmp_path / "test.sql"
+    initial_content = "SELECT * FROM project.dataset.table"
+    rendered_sql_string = "SELECT * FROM project.{{ params['dataset_key'] }}.{{ params['table_key'] }}"
+
+    # Write initial content to the file
+    with open(test_file, 'w') as file:
+        file.write(initial_content)
+
+    # Overwrite the file with rendered_sql_string
+    overwrite_sql_file_with_rendered_sql_string(test_file, rendered_sql_string)
+
+    # Read the file content and assert it has been overwritten
+    with open(test_file, 'r') as file:
+        content = file.read()
+    assert content == rendered_sql_string
+
+def test_overwrite_sql_file_with_rendered_sql_string_empty_file(tmp_path):
+    test_file = tmp_path / "test.sql"
+    rendered_sql_string = "SELECT * FROM project.{{ params['dataset_key'] }}.{{ params['table_key'] }}"
+
+    # Ensure the file is empty initially
+    with open(test_file, 'w') as file:
+        file.write("")
+
+    # Overwrite the file with rendered_sql_string
+    overwrite_sql_file_with_rendered_sql_string(test_file, rendered_sql_string)
+
+    # Read the file content and assert it has been overwritten
+    with open(test_file, 'r') as file:
+        content = file.read()
+    assert content == rendered_sql_string
