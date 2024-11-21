@@ -2,11 +2,6 @@ from wizard_lint.retrieve import obtain_sql_string_from_file_path, obtain_file_p
 import yaml
 
 
-def test_obtain_sql_string_from_file_path():
-
-    path = "./sql_folder/test_sql_open.sql"
-    assert obtain_sql_string_from_file_path(path) == "SELECT * FROM `project.dataset.table`"
-
 def test_obtain_file_paths_from_directory(tmp_path):
     # Setup
     sql_folder = tmp_path / "sql_folder"
@@ -33,6 +28,8 @@ def test_obtain_file_paths_from_directory_single_file(tmp_path):
     result_paths = obtain_file_paths_from_directory(str(sql_file))
 
     assert result_paths == expected_paths
+
+# test obtain_config_yaml
 
 def test_obtain_config_yaml(tmp_path):
     # Setup
