@@ -107,6 +107,23 @@ def test_render_table_string_with_invalid_table_string():
     except ValueError:
         pass
 
+def test_render_table_string_partial_render_dataset():
+    config = {
+        "dataset_param": "dataset",
+        "table_param": "table",
+    }
+    partial_render_dataset_string = "project.dataset.{{ params['table_param'] }}"
+
+    assert render_table_string(config=config, table_string=partial_render_dataset_string)== "project.{{ params['dataset_param'] }}.{{ params['table_param'] }}"
+
+def test_render_table_string_partial_render_table():
+    config = {
+        "dataset_param": "dataset",
+        "table_param": "table",
+    }
+    partial_render_table_string = "project.{{ params['dataset_param'] }}.table"
+
+    assert render_table_string(config=config, table_string=partial_render_table_string)== "project.{{ params['dataset_param'] }}.{{ params['table_param'] }}"
 
 # test render_sql_string_with_mapping_dict
 
