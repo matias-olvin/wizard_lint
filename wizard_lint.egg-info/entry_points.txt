@@ -1,0 +1,2 @@
+[console_scripts]
+wizard_lint = wizard_lint.main:main
