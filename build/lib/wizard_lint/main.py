@@ -10,8 +10,19 @@ from retrieve import (obtain_config_yaml,
                                   obtain_sql_string_from_file_path)
 
 
-def main(config_path, sql_folder_path):
+def main():
 
+    # obtain args from command line
+    parser = argparse.ArgumentParser(description="Process some SQL files.")
+    parser.add_argument('config_path', type=str, help='Path to the config YAML file')
+    parser.add_argument('sql_folder_path', type=str, help='Path to the folder containing SQL files')
+
+    args = parser.parse_args()
+
+    config_path = args.config_path
+    sql_folder_path = args.sql_folder_path
+
+    # load config file from path
     config = obtain_config_yaml(config_path)
 
     # obtain file paths from input directory
@@ -43,9 +54,4 @@ def main(config_path, sql_folder_path):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Process some SQL files.")
-    parser.add_argument('config_path', type=str, help='Path to the config YAML file')
-    parser.add_argument('sql_folder_path', type=str, help='Path to the folder containing SQL files')
-
-    args = parser.parse_args()
-    main(args.config_path, args.sql_folder_path)
+    main()
