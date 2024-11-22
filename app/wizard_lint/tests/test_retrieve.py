@@ -1,6 +1,6 @@
 import yaml
 
-from wizard_lint.retrieve import (obtain_config_yaml,
+from ..src.retrieve import (obtain_config_yaml,
                                   obtain_file_paths_from_directory,
                                   obtain_sql_string_from_file_path)
 

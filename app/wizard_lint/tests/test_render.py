@@ -1,4 +1,4 @@
-from wizard_lint.render import (obtain_table_strings,
+from ..src.render import (obtain_table_strings,
                                 overwrite_sql_file_with_rendered_sql_string,
                                 render_sql_string_with_mapping_dict,
                                 render_table_string)
