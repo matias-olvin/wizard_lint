@@ -120,6 +120,15 @@ def test_render_table_string_partial_render_table():
 
     assert render_table_string(config=config, table_string=partial_render_table_string)== "project.{{ params['dataset_param'] }}.{{ params['table_param'] }}"
 
+def test_render_table_string_jinja_templated_project_airflow_variable():
+    config = {
+        "dataset_param": "dataset",
+        "table_param": "table",
+    }
+    render_table_string_airflow_var_project = "{{ var.value.env_project }}.dataset.table"
+
+    assert render_table_string(config=config, table_string=render_table_string_airflow_var_project)== "{{ var.value.env_project }}.{{ params['dataset_param'] }}.{{ params['table_param'] }}"
+
 # test render_sql_string_with_mapping_dict
 
 
