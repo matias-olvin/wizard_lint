@@ -30,6 +30,29 @@ def test_obtain_table_strings_mixed():
         "project.dataset.table3",
     ]
 
+def test_obtain_table_strings_dashes_in_project():
+    sql_string = "SELECT * FROM `project-with-dashes.dataset.table`"
+    assert obtain_table_strings(sql_string) == [
+        "project-with-dashes.dataset.table",
+    ]
+
+def test_obtain_table_strings_dashes_in_dataset():
+    sql_string = "SELECT * FROM `project.dataset-with-dash.table`"
+    assert obtain_table_strings(sql_string) == [
+        "project.dataset-with-dash.table",
+    ]
+
+def test_obtain_table_strings_dashes_in_table():
+    sql_string = "SELECT * FROM `project.dataset.table-with-dash`"
+    assert obtain_table_strings(sql_string) == [
+        "project.dataset.table-with-dash",
+    ]
+
+def test_obtain_table_strings_multiple_dashes():
+    sql_string = "SELECT * FROM `project.dataset-with-dash.table-with-dash`"
+    assert obtain_table_strings(sql_string) == [
+        "project.dataset-with-dash.table-with-dash",
+    ]
 
 # test render_table_string
 
