@@ -4,7 +4,7 @@ from typing import Dict, List
 
 def obtain_table_strings(sql_string: str) -> List[str]:
 
-    pattern = r"\`((?:\{\{.*?\}\}|\w+)\.(?:\{\{.*?\}\}|\w+)\.(?:\{\{.*?\}\}|\w+))\`"
+    pattern = r"\`((?:\{\{.*?\}\}|[\w-]+)\.(?:\{\{.*?\}\}|[\w-]+)\.(?:\{\{.*?\}\}|[\w-]+))\`"
     tables = re.findall(pattern, sql_string)
 
     return tables
