@@ -4,7 +4,7 @@ from typing import Dict, List
 
 def obtain_table_strings(sql_string: str) -> List[str]:
 
-    pattern = r"((?:\{\{.*?\}\}|\w+)\.(?:\{\{.*?\}\}|\w+)\.(?:\{\{.*?\}\}|\w+))"
+    pattern = r"\`((?:\{\{.*?\}\}|\w+)\.(?:\{\{.*?\}\}|\w+)\.(?:\{\{.*?\}\}|\w+))\`"
     tables = re.findall(pattern, sql_string)
 
     return tables
@@ -20,7 +20,13 @@ def render_table_string(config: Dict[str, str], table_string: str) -> str:
         except TypeError:
             continue
 
-    project, dataset, table = table_string.split(".")
+    split_table_string = table_string.split(".")
+
+    if table_string.startswith("{{ var.value."):
+        project = ".".join(split_table_string[:-2])
+        dataset, table = split_table_string[-2:]
+    else:
+        project, dataset, table = split_table_string
 
     if dataset.startswith("{{ params["):
         rendered_dataset = dataset
