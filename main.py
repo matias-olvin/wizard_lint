@@ -33,10 +33,10 @@ def main(config_path, sql_folder_path):
         )
 
         if sql_string == rendered_sql_string:
-            print(f"[cyan]{n + 1}[/cyan][white]{path}[/white] left untouched")
+            print(f"[cyan]{n + 1}[/cyan] [white]{path}[/white] left untouched")
         else:
             print(
-                f"[cyan]{n + 1}[/cyan][white]{path} rendered[/white] [green]successfully[/green]"
+                f"[cyan]{n + 1}[/cyan] [white]{path} rendered[/white] [green]successfully[/green]"
             )
 
             overwrite_sql_file_with_rendered_sql_string(path, rendered_sql_string)
