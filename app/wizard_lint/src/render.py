@@ -4,7 +4,9 @@ from typing import Dict, List
 
 def obtain_table_strings(sql_string: str) -> List[str]:
 
-    pattern = r"\`((?:\{\{.*?\}\}|[\w-]+)\.(?:\{\{.*?\}\}|[\w-]+)\.(?:\{\{.*?\}\}|[\w-]+))\`"
+    pattern = (
+        r"\`((?:\{\{.*?\}\}|[\w-]+)\.(?:\{\{.*?\}\}|[\w-]+)\.(?:\{\{.*?\}\}|[\w-]+))\`"
+    )
     tables = re.findall(pattern, sql_string)
 
     return tables
@@ -32,7 +34,7 @@ def render_table_string(config: Dict[str, str], table_string: str) -> str:
         rendered_dataset = dataset
     else:
         rendered_dataset = "{{ params['" + flipped_config[dataset] + "'] }}"
-    
+
     if table.startswith("{{ params["):
         rendered_table = table
     else:

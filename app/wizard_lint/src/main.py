@@ -1,21 +1,21 @@
 import argparse
-from rich import print
 
 from render import (obtain_table_strings,
-                                overwrite_sql_file_with_rendered_sql_string,
-                                render_sql_string_with_mapping_dict,
-                                render_table_string)
-from retrieve import (obtain_config_yaml,
-                                  obtain_file_paths_from_directory,
-                                  obtain_sql_string_from_file_path)
+                    overwrite_sql_file_with_rendered_sql_string,
+                    render_sql_string_with_mapping_dict, render_table_string)
+from retrieve import (obtain_config_yaml, obtain_file_paths_from_directory,
+                      obtain_sql_string_from_file_path)
+from rich import print
 
 
 def main():
 
     # obtain args from command line
     parser = argparse.ArgumentParser(description="Process some SQL files.")
-    parser.add_argument('config_path', type=str, help='Path to the config YAML file')
-    parser.add_argument('sql_folder_path', type=str, help='Path to the folder containing SQL files')
+    parser.add_argument("config_path", type=str, help="Path to the config YAML file")
+    parser.add_argument(
+        "sql_folder_path", type=str, help="Path to the folder containing SQL files"
+    )
 
     args = parser.parse_args()
 
@@ -44,7 +44,9 @@ def main():
         )
 
         if sql_string == rendered_sql_string:
-            print(f"[cyan]{n + 1}[/cyan] [bold white]{path}[/bold white] [bold yellow]left untouched[/bold yellow]")
+            print(
+                f"[cyan]{n + 1}[/cyan] [bold white]{path}[/bold white] [bold yellow]left untouched[/bold yellow]"
+            )
         else:
             print(
                 f"[cyan]{n + 1}[/cyan] [bold white]{path} rendered[/bold white] [bold green]successfully[/bold green]"
