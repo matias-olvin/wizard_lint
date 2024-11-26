@@ -2,6 +2,7 @@ from ..src.render import (obtain_table_strings,
                                 overwrite_sql_file_with_rendered_sql_string,
                                 render_sql_string_with_mapping_dict,
                                 render_table_string)
+from jinja2 import Template
 
 
 # test obtain_table_strings
@@ -243,3 +244,21 @@ def test_overwrite_sql_file_with_rendered_sql_string_empty_file(tmp_path):
     with open(test_file, "r") as file:
         content = file.read()
     assert content == rendered_sql_string
+
+# adhoc
+
+def test_render_table_string_undo_with_jinja_template():
+    config = {
+        "dataset_param": "dataset",
+        "table_param": "table",
+    }
+
+    table_string = "project.dataset.table"
+
+    rendered_string = render_table_string(config=config, table_string=table_string)
+
+    template = Template(rendered_string)
+
+    unrendered_string = template.render(params=config)
+
+    assert unrendered_string == table_string
