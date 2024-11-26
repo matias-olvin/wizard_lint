@@ -44,10 +44,10 @@ def main():
         )
 
         if sql_string == rendered_sql_string:
-            print(f"[cyan]{n + 1}[/cyan] [white]{path}[/white] left untouched")
+            print(f"[cyan]{n + 1}[/cyan] [bold white]{path}[/bold white] [bold yellow]left untouched[/bold yellow]")
         else:
             print(
-                f"[cyan]{n + 1}[/cyan] [white]{path} rendered[/white] [green]successfully[/green]"
+                f"[cyan]{n + 1}[/cyan] [bold white]{path} rendered[/bold white] [bold green]successfully[/bold green]"
             )
 
             overwrite_sql_file_with_rendered_sql_string(path, rendered_sql_string)
