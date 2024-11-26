@@ -1,47 +1,41 @@
-currently there is an issue with adding jinja templating to code.
-It takes a while to add it ~ 10 minutes. I want to at least semi automate the process.
+# Documentation for the `app/wizard_lint` module
 
-Reqs:
-- It needs to add jinja templating only to parts where it is required
-- it should not add jinja templating to areas where it is not relevant
-- If a key is missing, alert user of the missing key(s)
-- It is better for it to be atomic ie if there is an error, nothing happens
-- It needs to take in a specified params file
-- It should be able to be run on a folder path recursively or on individual files
-- It needs to handle Variables from airflow
-- It needs to be idempotent
+## Overview
+The `wizard_lint` module is designed to add Jinja templating to SQL code. It provides functionality to parse SQL files, apply Jinja templating, and overwrite the original SQL files with the rendered SQL strings. The module includes various components for handling file operations, SQL parsing, and rendering.
 
-Components:
+## Components
 
-File Retriever - it needs to scan for sql files given a path. It should only read files inside of path
-Parser - it should take in the path to the file that is retrieved and add jinja templating
+### `app/wizard_lint/src/render.py`
+- **Functions:**
+    - `obtain_table_strings(sql_string: str) -> List[str]`: Extracts table strings from the given SQL string.
+    - `overwrite_sql_file_with_rendered_sql_string(file_path: str, rendered_sql_string: str)`: Overwrites the SQL file at the specified path with the rendered SQL string.
+    - `render_sql_string_with_mapping_dict(sql_string: str, mapping: Dict[str, str]) -> str`: Renders the SQL string using the provided mapping dictionary.
+    - `render_table_string(config: Dict[str, str], table_string: str) -> str`: Renders a table string using the provided configuration.
 
+### `app/wizard_lint/src/retrieve.py`
+- **Functions:**
+    - `obtain_config_yaml(path: str) -> Dict[str, str]`: Loads and returns the configuration from the specified YAML file.
+    - `obtain_file_paths_from_directory(directory_path: str) -> List[str]`: Retrieves all file paths from the specified directory.
+    - `obtain_sql_string_from_file_path(file_path: str) -> str`: Reads and returns the SQL string from the specified file path.
 
+### `app/wizard_lint/src/main.py`
+- **Main Function:**
+    - `main()`: The entry point of the application. It processes command-line arguments to obtain the configuration file path and the SQL folder path. It then loads the configuration, retrieves SQL file paths, parses and renders SQL strings, and overwrites the original SQL files with the rendered SQL strings.
 
-Parser Notes:
+### `app/wizard_lint/tests/test_render.py`
+- **Test Functions:**
+    - `test_overwrite_sql_file_with_rendered_sql_string_empty_file(tmp_path)`: Tests overwriting an empty SQL file with a rendered SQL string.
+    - `test_overwrite_sql_file_with_rendered_sql_string_basic(tmp_path)`: Tests overwriting a SQL file with initial content with a rendered SQL string.
+    - `test_render_sql_string_with_mapping_dict_with_airflow_vars()`: Tests rendering an SQL string with a mapping dictionary containing Airflow variables.
+    - Additional test functions for various scenarios related to obtaining table strings and rendering table strings.
 
-- Loop through all regex matches (comments are an issue)
-- Best to pass through a series of filters:
+### `setup.py`
+- **Setup Configuration:**
+    - Defines the package metadata, dependencies, and additional requirements for development.
 
-1. replace project
-2. check pre-existing jinja templating
-3. check value in config file
+### `app/wizard_lint/__init__.py` and `app/wizard_lint/src/__init__.py`
+- **Initialization:**
+    - Imports and exposes the main functions and classes from the `render` and `retrieve` modules.
 
-
-obtain matches: make dict containing before and after -> modify after according to filters -> replace project.dataset.table in sql string using before for after
-
-
-
-
-FOR NEXT TIME: file Retriever functions into sql_parser
-
-only obtain args from main.py then pass them onto sql_parser init
-
-we want to have it so that every init is one attempt to change the sql files provided
-
-ISSUE:
-
-{{ var.value.env_project }}.{{ params['postgres_dataset'] }}.{{ params['sgcenterraw_table'] }} since the value is already rendered, it is trying to
-split var.value.env_project on `.`
-
-THe issue is fixed but it is not dynamic. It needs to support any var.value.{VALUE_HERE} use regex
+## Usage
+To use the `wizard_lint` module, run the `main.py` script with the appropriate command-line arguments:
