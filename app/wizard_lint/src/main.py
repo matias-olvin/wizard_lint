@@ -1,5 +1,6 @@
 import argparse
 
+from utils import obtain_missing_params_in_table_strings
 from render import (obtain_table_strings,
                     overwrite_sql_file_with_rendered_sql_string,
                     render_sql_string_with_mapping_dict, render_table_string)
@@ -34,6 +35,14 @@ def main():
 
         table_strings = obtain_table_strings(sql_string)
 
+        missing_params = obtain_missing_params_in_table_strings(config, table_strings)
+
+        if missing_params:
+            print(
+            f"[cyan]{n + 1}[/cyan] [bold white]{path}[/bold white] [bold red]skipped due to missing params[/bold red]: {missing_params}"
+            )
+            continue
+
         rendered_table_strings_mapping = {
             table_string: render_table_string(config, table_string)
             for table_string in table_strings
@@ -45,7 +54,7 @@ def main():
 
         if sql_string == rendered_sql_string:
             print(
-                f"[cyan]{n + 1}[/cyan] [bold white]{path}[/bold white] [bold yellow]left untouched[/bold yellow]"
+                f"[cyan]{n + 1}[/cyan] [bold white]{path}[/bold white] left untouched"
             )
         else:
             print(
